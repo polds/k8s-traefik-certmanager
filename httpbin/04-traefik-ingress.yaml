@@ -1,0 +1,36 @@
+# This is the traefik ingress. I find that both a separate HTTP and HTTPS
+# route need to be defined or you end up seeing 404's for some reason.
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: httpbin
+  namespace: httpbin
+spec:
+  entryPoints:
+    - http
+  routes:
+    # Replace the host
+    - match: Host(`httpbin.example.com`)
+      kind: Rule
+      services:
+      - name: httpbin
+        port: 80
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: httpbin-tls
+  namespace: httpbin
+spec:
+  entryPoints:
+    - https
+  routes:
+    # Replace the host
+    - match: Host(`httpbin.example.com`)
+      kind: Rule
+      services:
+      - name: httpbin
+        port: 80
+  tls:
+    secretName: tls-com-example-httpbin                             {{replace this line}}
